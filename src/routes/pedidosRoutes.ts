@@ -3,19 +3,19 @@
 // GET http://localhost:3000/product
 
 import { Router } from "express"
-import ProductController from "../controllers/productController"
+import PedidosController from "../controllers/pedidosController"
 import authMiddleware from "../middleware/authMiddleware"
 import upload from "../middleware/uploadMiddleware"
 
-const productRouter = Router()
+const pedidosRouter = Router()
 
 // TODAS LAS PETICIONES QUE LLEGAN AL PRODUCTROUTER EMPIEZAN CON
 // POST http://localhost:3000/products/
 
-productRouter.get("/", ProductController.getAllProducts)
-productRouter.get("/:id", ProductController.getProduct)
-productRouter.post("/", authMiddleware, upload.single("image"), ProductController.addProduct)
-productRouter.patch("/:id", authMiddleware, ProductController.updateProduct)
-productRouter.delete("/:id", authMiddleware, ProductController.deleteProduct)
+pedidosRouter.get("/", PedidosController.getAllPedidos)
+pedidosRouter.get("/:id", PedidosController.getPedido)
+pedidosRouter.post("/", authMiddleware,PedidosController.addPedido)
+pedidosRouter.patch("/:id", authMiddleware, PedidosController.updatePedido)
+pedidosRouter.delete("/:id", authMiddleware, PedidosController.deletePedido)
 
-export default productRouter
+export default pedidosRouter
