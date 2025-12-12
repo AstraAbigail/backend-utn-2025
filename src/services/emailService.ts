@@ -11,14 +11,14 @@ const emailService = async (req: Request, res: Response) => {
 
   try {
     const info = await transporter.sendMail({
-      from: `Mensaje de la tienda: ${emailUser}`,
+      from: `Mensaje de Sadartsa: ${emailUser}`,
       to: process.env.EMAIL_USER,
       subject,
       html: createTemplate(emailUser, message)
     })
 
     res.json({ succes: true, message: "Correo fue enviado exitosamente", info })
-
+    
   } catch (e) {
     const error = e as Error
     res.status(500).json({ success: false, error: error.message })

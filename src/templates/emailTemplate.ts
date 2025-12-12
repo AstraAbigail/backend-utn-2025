@@ -5,7 +5,7 @@ const createTemplate = (emailUser: string, message: string) => {
       
       <tr>
         <td style="background: #111; padding: 20px; text-align: center; color: #ffffff;">
-          <h2 style="margin: 0;">Tienda de software ${emailUser}</h2>
+          <h2 style="margin: 0;">Tienda de Sadartsa ${emailUser}</h2>
         </td>
       </tr>
 
@@ -19,7 +19,7 @@ const createTemplate = (emailUser: string, message: string) => {
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
 
           <p style="font-size: 14px; color: #999; text-align: center;">
-            Este correo fue enviado automáticamente desde tu sitio web.
+            Este correo fue enviado automáticamente desde la plataforma.
           </p>
         </td>
       </tr>
