@@ -4,7 +4,7 @@ import { z } from "zod"
 const clienteSchema = z.object({
   nombre: z.string().min(3),
   identificacion: z.string().min(8),
-  domicilio: z.string().min(3)
+  domicilio: z.string().min(10)
 });
 
 const productoSchema = z.object({
@@ -21,7 +21,7 @@ const productoSchema = z.object({
 
 
 export const createPedidoSchema = z.object({
-  n_pedido: z.number().min(1),
+  n_pedido: z.number().min(6),
   cliente: clienteSchema,
   estado: z.string(),
   productos: z.array(productoSchema).min(1)

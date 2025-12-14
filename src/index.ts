@@ -44,7 +44,7 @@ app.get("/", (__: Request, res: Response) => {
 })
 
 app.use("/auth", authRouter)
-// http://localhost:3000/products?
+// http://localhost:3000/pedido/auth
 app.use("/pedidos", pedidosRouter)
 
 // enviar correo electrónico

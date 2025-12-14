@@ -1,0 +1,11 @@
+::1 GET /pedidos? 304 - - 42.950 ms
+::1 GET /pedidos? 304 - - 17.369 ms
+::1 PATCH /pedidos/693b1e171d3dbcf76c46824c 200 416 - 37.369 ms
+::1 GET /pedidos? 200 2582 - 11.647 ms
+::1 PATCH /pedidos/693b1e171d3dbcf76c46824c 200 435 - 23.895 ms
+::1 GET /pedidos? 200 2601 - 5.737 ms
+::1 DELETE /pedidos/693ab6f7009ea66d724cdef6 200 423 - 31.583 ms
+::ffff:127.0.0.1 POST /auth/forgot-password 404 54 - 1.544 ms
+::ffff:127.0.0.1 POST /auth/forgot-password 404 54 - 1.606 ms
+::ffff:127.0.0.1 POST /auth/forgot-password 200 39 - 40.758 ms
+::ffff:127.0.0.1 POST /auth/forgot-password 200 39 - 13.704 ms

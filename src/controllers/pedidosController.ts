@@ -133,7 +133,10 @@ class PedidosController {
 
       ////////////////
       const updateOperation: Record<string, any> = {}
-
+      
+      if (productoUpdate.category === "Exterior") {
+           productoUpdate.marco = "Marco estándar"
+      }
         // 1. Construir la operación $set usando el índice
         // Ejemplo: si indice=0, el campo es 'productos.0.cantidad'
         for (const key in  productoUpdate ) {

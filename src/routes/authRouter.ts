@@ -8,4 +8,8 @@ authRouter.post("/register", AuthController.register)
 // http://localhost:3000/auth/login
 authRouter.post("/login", AuthController.login)
 
+authRouter.post("/forgot-password", AuthController.forgotPassword)
+
+authRouter.post("/resetPassword", AuthController.resetPassword)
+
 export default authRouter

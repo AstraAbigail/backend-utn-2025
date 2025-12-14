@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import bcrypt from "bcryptjs"
+import crypto from "crypto"
 import User from "../model/UserModel"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
@@ -82,6 +83,123 @@ class AuthController {
       res.status(500).json({ success: false, error: error.message })
     }
   }
+
+  static forgotPassword = async (req:Request, res:Response): Promise<void | Response> => {
+    try {      
+      const { email } = req.body
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          error: "Email requerido"
+        })
+      }
+
+      const user = await User.findOne({ email })
+
+      // 🔐 Seguridad: no revelar si existe o no
+      if (!user) {
+        return res.status(200).json({
+          success: true,
+          message: "Si el email existe, se enviará un código"
+        })
+      }
+
+      // 1️⃣ Generar OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString()
+
+      // 2️⃣ Hashearlo
+      const hashedOTP = crypto
+        .createHash("sha256")
+        .update(otp)
+        .digest("hex")
+
+      // 3️⃣ Guardar OTP + expiración
+      user.resetPasswordOTP = hashedOTP
+      user.resetPasswordExpires = new Date(Date.now() + 10 * 60 * 1000)
+
+      await user.save()
+
+      // 4️⃣ Enviar mail (mock)
+      console.log("OTP enviado:", otp)
+
+      return res.status(200).json({
+        success: true,
+        message: "Código enviado al email"
+      })
+
+    } catch (error) {
+      console.error("FORGOT ERROR:", error)
+      return res.status(500).json({
+        success: false,
+        error: "Error interno"
+      })
+    } 
+  }
+
+  static resetPassword = async (req: Request, res: Response): Promise<void | Response> => {    
+    try {
+      const { email, otp, password } = req.body
+      const user = await User.findOne({ email })
+     
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: "Código inválido o vencido"
+        })
+      }
+      
+      if (
+        !user.resetPasswordOTP ||
+        !user.resetPasswordExpires ||
+        user.resetPasswordExpires.getTime() < Date.now()
+      ) {
+        return res.status(400).json({
+          success: false,
+          error: "Código inválido o vencido"
+        })
+      }
+
+
+      // 3️⃣ Hashear OTP recibido
+      const otpHashed = crypto
+        .createHash("sha256")
+        .update(otp)
+        .digest("hex")
+
+      // 4️⃣ Comparar OTP
+      if (otpHashed !== user.resetPasswordOTP) {
+        return res.status(400).json({
+          success: false,
+          error: "Código inválido o vencido"
+        })
+      }
+
+      // 5️⃣ Hashear nueva contraseña
+      const salt = await bcrypt.genSalt(10)
+      user.password = await bcrypt.hash(password, salt)
+
+      // 6️⃣ Limpiar OTP
+      user.resetPasswordOTP = undefined
+      user.resetPasswordExpires = undefined
+
+      await user.save()
+
+      return res.status(200).json({
+        success: true,
+        message: "Contraseña actualizada correctamente"
+      })
+
+    } catch (error) {
+      console.error("Reset password error:", error)
+      return res.status(500).json({
+        success: false,
+        error: "Error al resetear contraseña"
+      })
+    }
+  }
+  
+
 }
 
 export default AuthController
