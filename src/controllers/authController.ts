@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 dotenv.config()
 import { createUserSchema } from "../validators/userValidator"
+import  sendResetPasswordEmail  from "../services/sendResetPasswordEmail"
 
 const SECRET_KEY = process.env.JWT_SECRET!
 
@@ -83,7 +84,7 @@ class AuthController {
       res.status(500).json({ success: false, error: error.message })
     }
   }
-
+  //genera OTP
   static forgotPassword = async (req:Request, res:Response): Promise<void | Response> => {
     try {      
       const { email } = req.body
@@ -120,6 +121,9 @@ class AuthController {
 
       await user.save()
 
+      await sendResetPasswordEmail(user.email, otp)
+
+
       // 4️⃣ Enviar mail (mock)
       console.log("OTP enviado:", otp)
 
@@ -136,7 +140,7 @@ class AuthController {
       })
     } 
   }
-
+  //valida otp + cambia contraseña
   static resetPassword = async (req: Request, res: Response): Promise<void | Response> => {    
     try {
       const { email, otp, password } = req.body
@@ -184,6 +188,7 @@ class AuthController {
       user.resetPasswordExpires = undefined
 
       await user.save()
+
 
       return res.status(200).json({
         success: true,

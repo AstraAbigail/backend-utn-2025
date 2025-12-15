@@ -10,7 +10,7 @@ import dotenv from "dotenv"
 import logger from "./config/logger"
 import path from "node:path"
 import fs from "node:fs"
-import emailService from "./services/emailService"
+
 
 dotenv.config()
 
@@ -47,8 +47,7 @@ app.use("/auth", authRouter)
 // http://localhost:3000/pedido/auth
 app.use("/pedidos", pedidosRouter)
 
-// enviar correo electrónico
-app.post("/email/send", emailService)
+
 
 // endpoint para el 404 - no se encuentra el recurso
 app.use((__, res) => {
