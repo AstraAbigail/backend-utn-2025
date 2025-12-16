@@ -8,8 +8,7 @@ import morgan from "morgan"
 import IUserTokenPayload from "./interfaces/IUserTokenPayload"
 import dotenv from "dotenv"
 import logger from "./config/logger"
-import path from "node:path"
-import fs from "node:fs"
+
 
 
 dotenv.config()
@@ -29,13 +28,6 @@ app.use(cors())
 app.use(express.json())
 app.use(logger)
 
-const uploadsPath = path.join(__dirname, "../uploads")
-
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true })
-}
-
-// app.use("/uploads", express.static(uploadsPath))
 
 app.use(morgan("dev"))
 
@@ -60,4 +52,4 @@ app.listen(PORT, () => {
   connectDB()
 })
 
-//probando git que piro.
+

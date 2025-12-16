@@ -14,8 +14,7 @@ class PedidosController {
   static getAllPedidos = async (req: Request, res: Response): Promise<void | Response> => {
     try {
       const { n_pedido, nombre, identificacion, category, line, model, minCant, maxCant, estado} = req.query
-      console.log(req.query)
-
+      
       const filter: any = {}
 
       if (n_pedido) filter.n_pedido = Number(n_pedido)
@@ -33,8 +32,7 @@ class PedidosController {
       }
       if (estado) filter.estado= String(estado)
 
-      const pedidos = await PedidoModel.find(filter)
-      console.log("Pedidos encontrados:", pedidos.length)
+      const pedidos = await PedidoModel.find(filter)      
       res.json({ success: true, data: pedidos })
     } catch (e) {
       const error = e as Error
@@ -72,10 +70,7 @@ class PedidosController {
       const validator = createPedidoSchema.safeParse(body);
 
       if (!validator.success) {
-        return res.status(400).json({
-          success: false,
-          error: validator.error.flatten().fieldErrors,
-        });
+        return res.status(400).json({success: false, error: validator.error.flatten().fieldErrors});
       }
       //destructuro despues de zod
       const {
@@ -95,19 +90,13 @@ class PedidosController {
         
       await newPedido.save()
 
-      return res.status(201).json({
-        success: true,
-        data: newPedido,
-      })
+      return res.status(201).json({ success: true, data: newPedido})
       
 
 
     } catch (e) {
       const error = e as Error;
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-      });
+      return res.status(500).json({ success: false, error: error.message});
     }
   };
 
@@ -117,13 +106,11 @@ class PedidosController {
     try {
       const { id } = req.params
       const { indice, productoUpdate } = req.body
-
-
-      console.log(indice, productoUpdate, "DESDE EL BACK ")
+      
       if (!Types.ObjectId.isValid(id)) res.status(400).json({ succes: false, error: "ID Inválido" })
       // Asegurarse de que el índice sea un número válido
       if (typeof indice !== 'number' || indice < 0) {
-          return res.status(400).json({succes: false, error: "Indice Inválido"  });
+          return res.status(400).json({succes: false, error: "Indice Inválido"});
       }
       const validator = updatedPedidoSchema.safeParse(productoUpdate)
 
@@ -137,8 +124,7 @@ class PedidosController {
       if (productoUpdate.category === "Exterior") {
            productoUpdate.marco = "Marco estándar"
       }
-        // 1. Construir la operación $set usando el índice
-        // Ejemplo: si indice=0, el campo es 'productos.0.cantidad'
+        // Construir la operación $set usando el índice
         for (const key in  productoUpdate ) {
             updateOperation[`productos.${indice}.${key}`] =  productoUpdate[key];
         }
@@ -148,21 +134,13 @@ class PedidosController {
             { $set: updateOperation },
             { new: true } 
         )
-          console.log(pedidoActualizado,"PEDIDO ACTUALIZADO")
+          
         if (!pedidoActualizado){
             return res.status(404).json({success: false,error: "Pedido no encontrado." })
         }
 
         res.status(200).json({ success: true, data: pedidoActualizado })
-      ////////////////
-
-      // const updatedPedido = await PedidoModel.findByIdAndUpdate(id, validator.data, { new: true })
-
-      // if (!updatedPedido) {
-      //   return res.status(404).json({ success: false, error: "Producto no encontrado" })
-      // }
-
-      // res.json({ success: true, data: updatedPedido })
+      
     } catch (e) {
       const error = e as Error
       res.status(500).json({ success: false, error: error.message })
@@ -174,7 +152,7 @@ class PedidosController {
       const id = req.params.id
 
       if (!Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: "ID Inválido" });
+        return res.status(400).json({ success: false, error: "ID Inválido" });
       }
 
       const deletedPedido = await PedidoModel.findByIdAndDelete(id)
@@ -186,7 +164,7 @@ class PedidosController {
       res.json({ success: true, data: deletedPedido })
     } catch (e) {
       const error = e as Error
-      res.status(500).json({ error: error.message })
+      res.status(500).json({success: false, error: error.message })
     }
   }
 }
