@@ -32,3 +32,9 @@
 ::1 POST /auth/reset-password 200 66 - 94.490 ms
 ::1 POST /auth/forgot-password 200 53 - 408.977 ms
 ::1 POST /auth/reset-password 200 66 - 92.743 ms
+::1 GET /pedidos? 200 26 - 79.655 ms
+::1 GET /pedidos? 304 - - 72.667 ms
+::1 POST /auth/register 201 265 - 240.753 ms
+::1 POST /auth/login 200 240 - 164.481 ms
+::1 GET /pedidos? 304 - - 67.361 ms
+::1 GET /pedidos? 304 - - 63.054 ms

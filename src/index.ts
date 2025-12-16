@@ -35,7 +35,7 @@ if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true })
 }
 
-app.use("/uploads", express.static(uploadsPath))
+// app.use("/uploads", express.static(uploadsPath))
 
 app.use(morgan("dev"))
 
