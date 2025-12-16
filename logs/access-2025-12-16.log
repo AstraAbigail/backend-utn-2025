@@ -62,3 +62,17 @@
 ::1 POST /auth/login 200 240 - 164.695 ms
 ::1 GET /pedidos? 304 - - 109.202 ms
 ::1 GET /pedidos? 304 - - 73.882 ms
+::1 GET /pedidos? 304 - - 109.944 ms
+::1 GET /pedidos? 304 - - 74.506 ms
+::1 POST /auth/forgot-password 200 53 - 2920.675 ms
+::1 POST /auth/reset-password 200 66 - 256.832 ms
+::1 GET /pedidos? 304 - - 75.974 ms
+::1 GET /pedidos? 304 - - 63.728 ms
+::1 POST /auth/register 409 69 - 83.260 ms
+::1 POST /auth/register 201 271 - 225.502 ms
+::1 POST /auth/login 200 240 - 175.949 ms
+::1 GET /pedidos? 304 - - 67.607 ms
+::1 GET /pedidos? 304 - - 63.070 ms
+::1 POST /pedidos 201 425 - 96.934 ms
+::1 GET /pedidos? 200 2585 - 61.530 ms
+::1 GET /pedidos? 304 - - 82.275 ms

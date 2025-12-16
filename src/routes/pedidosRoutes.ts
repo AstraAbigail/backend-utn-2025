@@ -5,7 +5,7 @@
 import { Router } from "express"
 import PedidosController from "../controllers/pedidosController"
 import authMiddleware from "../middleware/authMiddleware"
-import upload from "../middleware/uploadMiddleware"
+
 
 const pedidosRouter = Router()
 
