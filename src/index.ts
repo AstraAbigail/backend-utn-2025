@@ -8,7 +8,7 @@ import morgan from "morgan"
 import IUserTokenPayload from "./interfaces/IUserTokenPayload"
 import dotenv from "dotenv"
 import logger from "./config/logger"
-import limiter from "../src/middleware/rateLimitMiddleware"
+import limiter from "./middleware/rateLimitMiddleware"
 
 
 
