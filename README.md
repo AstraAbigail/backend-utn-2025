@@ -8,7 +8,7 @@ Backend desarrollado en Node.js + Express, con conexión a MongoDB.
 
 ## Instrucciones para instalacion y ejecucion -> local
 
-1. Clona el repositorio: https://github.com/AstraAbigail/backend-utn-2025
+1. Clona el repositorio backend: https://github.com/AstraAbigail/backend-utn-2025 y frontend: https://github.com/AstraAbigail/frontend-utn-2025
 2. Ingresar a la carpeta y ejecutar en la terminal para instalar las dependencias -> npm install.
 3. Crear el archivo .env e incooporar las variables correspondientes que se encuentran en el archivo .env.example
 4. Ejecutar la aplicacion con, npm run dev
