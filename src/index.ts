@@ -8,6 +8,7 @@ import morgan from "morgan"
 import IUserTokenPayload from "./interfaces/IUserTokenPayload"
 import dotenv from "dotenv"
 import logger from "./config/logger"
+import limiter from "../src/middleware/rateLimitMiddleware"
 
 
 
@@ -35,7 +36,7 @@ app.get("/", (__: Request, res: Response) => {
   res.json({ status: true })
 })
 
-app.use("/auth", authRouter)
+app.use("/auth", limiter, authRouter)
 // http://localhost:3000/pedido/auth
 app.use("/pedidos", pedidosRouter)
 
