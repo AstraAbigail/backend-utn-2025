@@ -4,7 +4,7 @@
 import { Request, Response } from "express"
 import PedidoModel  from "../model/PedidoModel"
 import { Types } from "mongoose"
-import { createPedidoSchema, updatedPedidoSchema } from "../validators/pedidoValidator"
+import { createPedidoSchema, updateProductoSchema, updateEstadoSchema } from "../validators/pedidoValidator"
 
 
 
@@ -13,14 +13,14 @@ import { createPedidoSchema, updatedPedidoSchema } from "../validators/pedidoVal
 class PedidosController {
   static getAllPedidos = async (req: Request, res: Response): Promise<void | Response> => {
     try {
-      const { n_pedido, nombre, identificacion, category, line, model, minCant, maxCant, estado} = req.query
+      const { n_pedido, nombre, identificacion, category, line, model, minCant, maxCant, estado } = req.query
       
       const filter: any = {}
 
       if (n_pedido) filter.n_pedido = Number(n_pedido)
       if (nombre) filter['cliente.nombre'] = new RegExp(String(nombre), "i")
       if (identificacion) filter['cliente.identificacion'] = new RegExp(String(identificacion))
-      if (category) filter['productos.category']= new RegExp(String(category), "i")
+      if (category) filter['productos.category'] = new RegExp(String(category), "i")
       if (line) filter['productos.line'] = new RegExp(String(line), "i")
       if (model) filter['productos.model'] = new RegExp(String(model), "i")
       if (minCant || maxCant) {
@@ -30,9 +30,9 @@ class PedidosController {
         // minPrice -> si tengo un precio mínimo quiero un objeto con un precio mas grande.
         if (maxCant) filter['productos.cantidad'].$lte = Number(maxCant)
       }
-      if (estado) filter.estado= String(estado)
+      if (estado) filter.estado = String(estado)
 
-      const pedidos = await PedidoModel.find(filter)      
+      const pedidos = await PedidoModel.find(filter)
       res.json({ success: true, data: pedidos })
     } catch (e) {
       const error = e as Error
@@ -70,7 +70,7 @@ class PedidosController {
       const validator = createPedidoSchema.safeParse(body);
 
       if (!validator.success) {
-        return res.status(400).json({success: false, error: validator.error.flatten().fieldErrors});
+        return res.status(400).json({ success: false, error: validator.error.flatten().fieldErrors });
       }
       //destructuro despues de zod
       const {
@@ -90,13 +90,13 @@ class PedidosController {
         
       await newPedido.save()
 
-      return res.status(201).json({ success: true, data: newPedido})
+      return res.status(201).json({ success: true, data: newPedido })
       
 
 
     } catch (e) {
       const error = e as Error;
-      return res.status(500).json({ success: false, error: error.message});
+      return res.status(500).json({ success: false, error: error.message });
     }
   };
 
@@ -105,47 +105,67 @@ class PedidosController {
   static updatePedido = async (req: Request, res: Response): Promise<void | Response> => {
     try {
       const { id } = req.params
-      const { indice, productoUpdate } = req.body
-      
-      if (!Types.ObjectId.isValid(id)) res.status(400).json({ succes: false, error: "ID Inválido" })
-      // Asegurarse de que el índice sea un número válido
-      if (typeof indice !== 'number' || indice < 0) {
-          return res.status(400).json({succes: false, error: "Indice Inválido"});
-      }
-      const validator = updatedPedidoSchema.safeParse(productoUpdate)
+      const { indice, productoUpdate, estado } = req.body
 
-      if (!validator.success) {
-        return res.status(400).json({ success: false, error: validator.error.flatten().fieldErrors });
+      if (!Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ success: false, error: "ID inválido" })
       }
 
-      ////////////////
+      if (typeof indice !== "number" || indice < 0) {
+        return res.status(400).json({ success: false, error: "Índice inválido" })
+      }
+
       const updateOperation: Record<string, any> = {}
+
       
-      if (productoUpdate.category === "Exterior") {
-           productoUpdate.marco = "Marco estándar"
+      if (estado) {
+        const estadoValid = updateEstadoSchema.safeParse({ estado })
+        if (!estadoValid.success) {
+          return res.status(400).json({
+            success: false,
+            error: estadoValid.error.flatten().fieldErrors
+          })
+        }
+
+        updateOperation.estado = estado
       }
-        // Construir la operación $set usando el índice
-        for (const key in  productoUpdate ) {
-            updateOperation[`productos.${indice}.${key}`] =  productoUpdate[key];
-        }
 
-        const pedidoActualizado = await PedidoModel.findByIdAndUpdate(
-            id,
-            { $set: updateOperation },
-            { new: true } 
-        )
-          
-        if (!pedidoActualizado){
-            return res.status(404).json({success: false,error: "Pedido no encontrado." })
-        }
-
-        res.status(200).json({ success: true, data: pedidoActualizado })
       
+      if (productoUpdate) {
+        const productoValid = updateProductoSchema.safeParse(productoUpdate)
+        if (!productoValid.success) {
+          return res.status(400).json({
+            success: false,
+            error: productoValid.error.flatten().fieldErrors
+          })
+        }
+
+        if (productoUpdate.category === "Exterior") {
+          productoUpdate.marco = "Marco estándar"
+        }
+
+        for (const key in productoUpdate) {
+          updateOperation[`productos.${indice}.${key}`] = productoUpdate[key]
+        }
+      }
+
+      const pedidoActualizado = await PedidoModel.findByIdAndUpdate(
+        id,
+        { $set: updateOperation },
+        { new: true }
+      )
+
+      if (!pedidoActualizado) {
+        return res.status(404).json({ success: false, error: "Pedido no encontrado" })
+      }
+
+      return res.status(200).json({ success: true, data: pedidoActualizado })
+
     } catch (e) {
-      const error = e as Error
-      res.status(500).json({ success: false, error: error.message })
+      return res.status(500).json({ success: false, error: (e as Error).message })
     }
   }
+
 
   static deletePedido = async (req: Request, res: Response): Promise<void | Response> => {
     try {

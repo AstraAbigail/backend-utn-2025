@@ -27,7 +27,10 @@ export const createPedidoSchema = z.object({
   productos: z.array(productoSchema).min(1)
 });
 
-
-
-
 export const updatedPedidoSchema = createPedidoSchema.partial()
+
+export const updateProductoSchema = productoSchema.partial()
+
+export const updateEstadoSchema = z.object({ estado: z.string()})
+
+
